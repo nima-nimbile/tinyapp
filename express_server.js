@@ -2,16 +2,31 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true })); //parse form data
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-function generateRandomString() {}
+ 
+function generateRandomString() {
+  let newString = '';
+  const charList = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let x = 0; x < 6; x += 1) {
+    newString += charList.charAt(Math.floor(Math.random() * charList.length));
+  }
+  return newString;
+}
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  const newInfo = req.body; // Log the POST request body to the console
+  console.log(newInfo);
+  urlDatabase[generateRandomString()] = newInfo.longURL;
+  res.redirect(`/urls/${generateRandomString()}`); 
+});
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase.id
+  
+  res.redirect(longURL);
 });
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
