@@ -3,7 +3,9 @@ const app = express();
 const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true })); //parse form data
-
+// const langueges = require('./langueges.json')
+// const cookieParse = require("cookieParse")
+// app.set(cookieParse())
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -18,11 +20,20 @@ function generateRandomString() {
   }
   return newString;
 }
+
 app.post("/urls/:id/delete", (req, res) => {
   let shortUrl = req.params.id;
   delete urlDatabase[shortUrl];
   res.redirect("/urls")
 })
+
+// app.post("_header", (req, res) => {
+//     const userName = req.params.username;
+//     console.log("Ueser", userName)
+//   res.cookie("userName", userName);
+//   res.redirect("/urls")
+//   })
+
 
 app.post("/urls", (req, res) => {
   const newInfo = req.body; // Log the POST request body to the console
@@ -32,11 +43,13 @@ app.post("/urls", (req, res) => {
 });
 app.get("/u/:id", (req, res) => {
   let shortUrl = req.params.id;
-  console.log("short" , shortUrl);
   const longURL = urlDatabase[shortUrl];
 
   res.redirect(longURL);
 });
+app.get("urls/login", (req, res) => {
+  res.render("urls_login");
+  })
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
@@ -59,6 +72,7 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls")
 
 })
+
 
 app.get("/", (req, res) => {
   res.send("Hello!");
