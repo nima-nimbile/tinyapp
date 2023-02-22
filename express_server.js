@@ -8,6 +8,7 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
  
 function generateRandomString() {
   let newString = '';
@@ -18,17 +19,22 @@ function generateRandomString() {
   return newString;
 }
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase.id;
+  let shortUrl = req.params.id;
+  delete urlDatabase[shortUrl];
   res.redirect("/urls")
 })
+
 app.post("/urls", (req, res) => {
   const newInfo = req.body; // Log the POST request body to the console
-  urlDatabase[generateRandomString()] = newInfo.longURL;
-  res.redirect(`/urls/${generateRandomString()}`); 
+  let shortUrl = generateRandomString();
+  urlDatabase[shortUrl] = newInfo.longURL;
+  res.redirect(`/urls/${shortUrl}`); 
 });
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id];
-  console.log("longURL", longURL)
+  let shortUrl = req.params.id;
+  console.log("short" , shortUrl);
+  const longURL = urlDatabase[shortUrl];
+
   res.redirect(longURL);
 });
 app.get("/urls/new", (req, res) => {
@@ -44,6 +50,15 @@ app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase};
   res.render("urls_index", templateVars);
 });
+app.post("/urls/:id", (req, res) => {
+  let newLongUrl = req.body.nim
+  console.log("new URL: ", newLongUrl);
+  let shortUrl = req.params.id;
+  console.log("Id", shortUrl)
+  urlDatabase[shortUrl] = newLongUrl;
+  res.redirect("/urls")
+
+})
 
 app.get("/", (req, res) => {
   res.send("Hello!");

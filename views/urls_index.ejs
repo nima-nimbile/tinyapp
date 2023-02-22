@@ -32,7 +32,10 @@
             <tr>
               <td><%= id %></td>
               <td><%= urls[id] %></td>
-              <td> <form method="POST" action="/urls/9sm5xK/delete"><input type="submit" value="delete"></form> </td>
+              <td> <form method="POST" action=<%= "/urls/"+id+"/delete" %>><input type="submit" value="delete"></form> </td>
+              <td> <form method="GET" action=<%= "/urls/"+id %>>
+                <input type="submit" value="edit">
+              </form> </td>
             </tr>
           <% } %>
         </tbody>
