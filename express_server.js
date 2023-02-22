@@ -17,15 +17,18 @@ function generateRandomString() {
   }
   return newString;
 }
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase.id;
+  res.redirect("/urls")
+})
 app.post("/urls", (req, res) => {
   const newInfo = req.body; // Log the POST request body to the console
-  console.log(newInfo);
   urlDatabase[generateRandomString()] = newInfo.longURL;
   res.redirect(`/urls/${generateRandomString()}`); 
 });
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase.id
-  
+  const longURL = urlDatabase[req.params.id];
+  console.log("longURL", longURL)
   res.redirect(longURL);
 });
 app.get("/urls/new", (req, res) => {
