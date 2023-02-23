@@ -16,14 +16,17 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <a class="nav-item nav-link" href="/urls/login">Login</a>
-        <button type="submit">button</button>
         <!-- <a class="nav-item nav-link" href="/urls">Logout</a> -->
         <% if (username) { %>
           <li class="nav-item">
-            <a class="nav-link" href="/urls"><%= username %></a>
+            <h5>logged in as tinyAPP User</h5>
+            <form action="/logout" method="POST" ><button type="submit">Logout</button></form>
           </li>
-        <% } %>
+        <% } else { %>
+          <form action="/login" method="POST" class="nav-item"><input name = "username" type="username" placeholder="UserName" >
+            <button type="submit">Login</button></form>
+          
+          <% } %>
       </div>
     </div>
   </nav>

@@ -82,6 +82,17 @@ app.get("/urls/login", (req, res) => {
   };
   res.render("urls_login", templateVars);
 })
+app.get("/urls/logout", (req, res) => {
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"],
+  };
+  res.render("urls", templateVars);
+})
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("/urls")
+})
 
 app.post("/login", (req, res) => {
   const userId = req.body.username;
