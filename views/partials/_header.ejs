@@ -16,11 +16,12 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <a class="nav-item nav-link" href="urls/login">Login</a>
+        <a class="nav-item nav-link" href="/urls/login">Login</a>
+        <button type="submit">button</button>
         <!-- <a class="nav-item nav-link" href="/urls">Logout</a> -->
-        <% if (req.cookies.username) { %>
+        <% if (username) { %>
           <li class="nav-item">
-            <a class="nav-link" href="/urls"><%= req.cookies.username %></a>
+            <a class="nav-link" href="/urls"><%= username %></a>
           </li>
         <% } %>
       </div>

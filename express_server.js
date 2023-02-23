@@ -28,13 +28,6 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[shortUrl];
   res.redirect("/urls")
 })
-app.get('/urls', (req, res) => {
-  const templateVars = {
-    urls: urlDatabase,
-    username: req.cookies.username
-  };
-  res.render('urls_index', templateVars);
-});
 
 app.post("/urls", (req, res) => {
   const newInfo = req.body; // Log the POST request body to the console
@@ -49,16 +42,11 @@ app.get("/u/:id", (req, res) => {
 
   res.redirect(longURL);
 });
-app.get("/urls/login", (req, res) => {
-  res.render("urls_login");
-  const templateVars = {
-    username: req.cookies["username"],
-  };
-  res.render("urls_index", templateVars);
-})
+
 app.get("/urls/new", (req, res) => {
   // res.render("urls_new");
   const templateVars = {
+    urls: urlDatabase,
     username: req.cookies["username"],
     // ... any other vars
   };
@@ -70,7 +58,14 @@ app.get("/hello", (req, res) => {
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
-
+app.get('/urls', (req, res) => {
+  console.log(req.cookies["username"])
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
+  res.render('urls_index', templateVars);
+});
 app.post("/urls/:id", (req, res) => {
   let newLongUrl = req.body.nim;
   console.log("new URL: ", newLongUrl);
@@ -80,10 +75,18 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls")
 
 })
+app.get("/urls/login", (req, res) => {
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"],
+  };
+  res.render("urls_login", templateVars);
+})
 
 app.post("/login", (req, res) => {
-  // const userId = req.body.username;
-  res.cookie("username", req.cookies["username"]);
+  const userId = req.body.username;
+  console.log("---------------------",userId)
+  res.cookie("username", userId);
   res.redirect("/urls")
 })
 
