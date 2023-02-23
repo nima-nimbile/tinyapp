@@ -27,14 +27,6 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls")
 })
 
-// app.post("_header", (req, res) => {
-//     const userName = req.params.username;
-//     console.log("Ueser", userName)
-//   res.cookie("userName", userName);
-//   res.redirect("/urls")
-//   })
-
-
 app.post("/urls", (req, res) => {
   const newInfo = req.body; // Log the POST request body to the console
   let shortUrl = generateRandomString();
@@ -47,7 +39,7 @@ app.get("/u/:id", (req, res) => {
 
   res.redirect(longURL);
 });
-app.get("urls/login", (req, res) => {
+app.get("/urls/login", (req, res) => {
   res.render("urls_login");
   })
 app.get("/urls/new", (req, res) => {
@@ -73,6 +65,12 @@ app.post("/urls/:id", (req, res) => {
 
 })
 
+app.post("/login", (req, res) => {
+  // const userName = ;
+  // console.log(userName);
+res.cookie("userName", req.body.username);
+res.redirect("/urls")
+})
 
 app.get("/", (req, res) => {
   res.send("Hello!");
