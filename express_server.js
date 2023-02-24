@@ -26,24 +26,28 @@ function generateRandomString() {
   return newString;
 };
 // ..........................................................emailChecker(emailCheck)
+// function emailChecker(emailCheck) {
+//   let emailExists = false;
+//   for (let key in users) {
+//     if (users[key]['email'] === emailCheck.trim()) {
+//       emailExists = true;
+//       break;
+//     }
+//   }
+//   return emailExists;
+// };
 function emailChecker(emailCheck) {
-  let emailExists = false;
   for (let key in users) {
     if (users[key]['email'] === emailCheck.trim()) {
-      emailExists = true;
-      break;
+      return key;
     }
   }
-  return emailExists;
 };
 // ..........................................................passChecker(pass)
-function passChecker(pass) {
+function passChecker(pass, userId) {
   let samePass = false;
-  for (let key in users) {
-    if (users[key]['password'] === pass.trim()) {
-      samePass = true;
-      break;
-    }
+  if (users[userId]['password'] === pass.trim()) {
+    samePass = true;
   }
   return samePass;
 };
@@ -76,6 +80,7 @@ app.post("/register", (req, res) => {
     email: subEmail,
     password: subPassword
   }
+  console.log(users)
   res.cookie("user_id", users[newUserID]);
   res.redirect("/urls")
 })
@@ -156,14 +161,17 @@ app.post("/login", (req, res) => {
   const newUserID = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
-  if (!emailChecker(email)) {
+  let userId = emailChecker(email);
+  if (!userId) {
     res.status(403).send("Please provide valid email");
   }
-  if (emailChecker(email) && !passChecker(password)) {
+  else if (!passChecker(password, userId)) {
     res.status(403).send("Password is not match");
-  } 
-  res.cookie("user_id", newUserID);
+  } else{
+    console.log(users)
+  res.cookie("user_id", users[userId]);
   res.redirect("/urls")
+  }
   
 })
 // ..........................................................logout
