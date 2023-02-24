@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const cookieParser = require("cookie-parser") 
+const bcrypt = require("bcryptjs");
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true })); //parse form data
 app.use(cookieParser());
@@ -40,7 +41,7 @@ function emailChecker(emailCheck) {
 // ..........................................................passChecker(pass)
 function passChecker(pass, userId) {
   let samePass = false;
-  if (users[userId]['password'] === pass.trim()) {
+  if (bcrypt.compareSync(pass.trim(), users[userId]['password'])) {
     samePass = true;
   }
   return samePass;
@@ -59,8 +60,8 @@ const urlsForUser = function(id, userDatabase) {
 const users = {
   userRandomID: {
     id: "userRandomID",
-    email: "nima@hotmail.com",
-    password: "123",
+    email: 'nilou@gmail.com',
+    password: '$2a$10$TK8hTjgPXHjPZl70300/Y.LcKNgUpBfvOpu8rDj6gUB/xFELFQyTK'
   },
 };
 // .........................................................."/register"
@@ -68,6 +69,7 @@ app.post("/register", (req, res) => {
   const newUserID = generateRandomString();
   const subEmail = req.body.email;
   const subPassword = req.body.password;
+  const hashedPassword = bcrypt.hashSync(subPassword, 10);
   if (!subEmail || !subPassword) {
     res.status(400).send("Please provide valid email and password");
   }
@@ -77,9 +79,9 @@ app.post("/register", (req, res) => {
   users[newUserID] = {
     id: newUserID,
     email: subEmail,
-    password: subPassword
+    password: hashedPassword
   }
-  
+  console.log("users", users);
   res.cookie("user_id", users[newUserID]);
   res.redirect("/urls")
 })
