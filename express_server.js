@@ -13,8 +13,12 @@ app.use((req, res, next) => {
 });
 // ..........................................................urlDatabase Object
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW",
+  }
+  // "b2xVn2": "http://www.lighthouselabs.ca",
+  // "9sm5xK": "http://www.google.com"
 };
 // ..........................................................generateRandomString()
 function generateRandomString() {
@@ -96,7 +100,7 @@ app.get("/u/:id", (req, res) => {
   if (!urlDatabase[shortUrl]){
     res.send("URL does not exist");
   } else {
-  const longURL = urlDatabase[shortUrl];
+  const longURL = urlDatabase[shortUrl].longURL;
   console.log("longURL: ", longURL)
 
   res.redirect(longURL);
