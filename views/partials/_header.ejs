@@ -23,10 +23,7 @@
             <form action="/logout" method="POST" ><button type="submit">Logout</button></form>
           </li>
         <% } else { %>
-          
-          <form action="/login" method="POST" class="nav-item nav-link">
-            <!-- <input name = "username" type="username" placeholder="UserName" > -->
-            <button type="submit">Login</button></form>
+          <a class="nav-item nav-link" href="/login" ><button type="submit">Login</button></a>
             <a class="nav-item nav-link" href="/register" ><button type="submit">register</button></a>
               
            

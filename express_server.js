@@ -23,7 +23,16 @@ function generateRandomString() {
   }
   return newString;
 };
-
+function emailChecker(emailCheck) {
+  let emailExists = false;
+  for (let key in users) {
+    if (users[key]['email'] === emailCheck.trim()) {
+      emailExists = true;
+      break;
+    }
+  }
+  return emailExists;
+};
 const users = {
   userID: {
     id: "userRandomID",
@@ -40,6 +49,12 @@ app.post("/register", (req, res) => {
   const newUserID = generateRandomString();
   const subEmail = req.body.email;
   const subPassword = req.body.password;
+  if (!subEmail || !subPassword) {
+    res.status(400).send("Please provide valid email and password");
+  }
+  if (emailChecker(subEmail)) {
+    res.status(400).send("this email has already taken");
+  }
   users[newUserID] = {
     id: newUserID,
     email: subEmail,
@@ -94,7 +109,7 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 app.get('/urls', (req, res) => {
-  console.log(req.cookies["username"])
+  // console.log(req.cookies["username"])
   const templateVars = {
     urls: urlDatabase,
     // username: req.cookies["username"]
@@ -105,15 +120,15 @@ app.get('/urls', (req, res) => {
 });
 app.post("/urls/:id", (req, res) => {
   let newLongUrl = req.body.nim;
-  console.log("new URL: ", newLongUrl);
+  // console.log("new URL: ", newLongUrl);
   let shortUrl = req.params.id;
-  console.log("Id", shortUrl)
+  // console.log("Id", shortUrl)
   urlDatabase[shortUrl] = newLongUrl;
   res.redirect("/urls")
 
 })
 
-app.get("/urls/login", (req, res) => {
+app.get("/login", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
     // username: req.cookies["username"],
@@ -138,9 +153,7 @@ app.post("/logout", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  const userId = req.body.username;
-  console.log("---------------------",userId)
-  res.cookie("username", userId);
+  
   res.redirect("/urls")
 })
 
