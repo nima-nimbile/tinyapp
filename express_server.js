@@ -45,6 +45,16 @@ function passChecker(pass, userId) {
   }
   return samePass;
 };
+// ..........................................................urlsForUser(id, userDatabase)
+const urlsForUser = function(id, userDatabase) {
+  const sameId = false;
+  for (const shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id) {
+      sameId = true;
+    }
+  }
+  return sameId;
+};
 // ..........................................................users Object
 const users = {
   userRandomID: {
@@ -89,8 +99,13 @@ app.get("/register", (req, res) => {
 // .........................................................."/urls/:id/delete"
 app.post("/urls/:id/delete", (req, res) => {
   let shortUrl = req.params.id;
+  if (!urlsForUser(shortUrl, urlDatabase)){
+    res.send("you do not own the URL")
+  } else {
+  
   delete urlDatabase[shortUrl];
   res.redirect("/urls")
+  }
 });
 
 // .........................................................."/u/:id"
@@ -132,6 +147,9 @@ app.get("/urls.json", (req, res) => {
 // ..........................................................'/urls'
 app.get('/urls', (req, res) => {
   // console.log(req.cookies["username"])
+  if (!req.cookies["user_id"]){
+    res.send(`Please first <a href="/login">login</a> or <a href="/register">register</a>`)
+  } else {
   const templateVars = {
     urls: urlDatabase,
     // username: req.cookies["username"]
@@ -139,6 +157,7 @@ app.get('/urls', (req, res) => {
     user: users
   };
   res.render('urls_index', templateVars);
+}
 });
 
 app.post("/urls", (req, res) => {
@@ -207,6 +226,10 @@ app.get("/", (req, res) => {
 });
 // .........................................................."/urls/:id"
 app.get("/urls/:id", (req, res) => {
+  let shortUrl = req.params.id;
+  if (!urlsForUser(shortUrl, urlDatabase)){
+    res.send("you do not own the URL")
+  } else {
   const templateVars = {
     id: req.params.id, longURL: req.params.longURL,
     // username: req.cookies["username"],
@@ -214,15 +237,17 @@ app.get("/urls/:id", (req, res) => {
     user: users
   };
   res.render("urls_show", templateVars);
+}
 });
 app.post("/urls/:id", (req, res) => {
-  let newLongUrl = req.body.nim;
-  // console.log("new URL: ", newLongUrl);
   let shortUrl = req.params.id;
-  // console.log("Id", shortUrl)
+  if (!urlsForUser(shortUrl, urlDatabase)){
+    res.send("you do not own the URL")
+  } else {
+  let newLongUrl = req.body.nim;
   urlDatabase[shortUrl] = newLongUrl;
   res.redirect("/urls")
-
+  }
 })
 // .........................................................."/set"
 app.get("/set", (req, res) => {
