@@ -18,10 +18,11 @@
 
   <%- include('partials/_header') %>
 <main>
-  <form action = "/register", method = "POST">
-    <input type = "email" name  = "email" placeholder = "Email">
+  <h2>Creat Account</h2>
+  <form action = "/register", method = "POST"><label for = "email"><h4>Email</h4></label>
+    <input type = "email" name  = "email" placeholder = "Email"><label for = "password"><h4>Password</h4></label>
     <input type = "password" name = "password" placeholder = "password">
-    <button type = "submit"> register here </button>
+    <button type = "submit"> Register Here </button>
   </form>
 </main>
 <!-- Bootstrap JS -->

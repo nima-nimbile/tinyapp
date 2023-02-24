@@ -5,16 +5,18 @@ const cookieParser = require("cookie-parser")
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true })); //parse form data
 app.use(cookieParser());
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+
 
 app.use((req, res, next) => {
   res.locals.req = req;
   next();
 });
-
+// ..........................................................urlDatabase Object
+const urlDatabase = {
+  "b2xVn2": "http://www.lighthouselabs.ca",
+  "9sm5xK": "http://www.google.com"
+};
+// ..........................................................generateRandomString()
 function generateRandomString() {
   let newString = '';
   const charList = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -23,6 +25,7 @@ function generateRandomString() {
   }
   return newString;
 };
+// ..........................................................emailChecker(emailCheck)
 function emailChecker(emailCheck) {
   let emailExists = false;
   for (let key in users) {
@@ -33,6 +36,18 @@ function emailChecker(emailCheck) {
   }
   return emailExists;
 };
+// ..........................................................passChecker(pass)
+function passChecker(pass) {
+  let samePass = false;
+  for (let key in users) {
+    if (users[key]['password'] === pass.trim()) {
+      samePass = true;
+      break;
+    }
+  }
+  return samePass;
+};
+// ..........................................................users Object
 const users = {
   userID: {
     id: "userRandomID",
@@ -45,6 +60,7 @@ const users = {
     password: "dishwasher-funk",
   },
 };
+// .........................................................."/register"
 app.post("/register", (req, res) => {
   const newUserID = generateRandomString();
   const subEmail = req.body.email;
@@ -71,27 +87,22 @@ app.get("/register", (req, res) => {
     user: users
   };
   res.render("urls_register", templateVars);
-})
+});
+// .........................................................."/urls/:id/delete"
 app.post("/urls/:id/delete", (req, res) => {
   let shortUrl = req.params.id;
   delete urlDatabase[shortUrl];
   res.redirect("/urls")
-})
-
-app.post("/urls", (req, res) => {
-  const newInfo = req.body; // Log the POST request body to the console
-  let shortUrl = generateRandomString();
-  urlDatabase[shortUrl] = newInfo.longURL;
-  res.redirect(`/urls/${shortUrl}`);
-
 });
+
+// .........................................................."/u/:id"
 app.get("/u/:id", (req, res) => {
   let shortUrl = req.params.id;
   const longURL = urlDatabase[shortUrl];
 
   res.redirect(longURL);
 });
-
+// .........................................................."/urls/new"
 app.get("/urls/new", (req, res) => {
   // res.render("urls_new");
   const templateVars = {
@@ -102,12 +113,15 @@ app.get("/urls/new", (req, res) => {
   };
   res.render("urls_new", templateVars);
 });
+// .........................................................."/hello"
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
+// .........................................................."/urls.json"
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
+// ..........................................................'/urls'
 app.get('/urls', (req, res) => {
   // console.log(req.cookies["username"])
   const templateVars = {
@@ -118,16 +132,16 @@ app.get('/urls', (req, res) => {
   };
   res.render('urls_index', templateVars);
 });
-app.post("/urls/:id", (req, res) => {
-  let newLongUrl = req.body.nim;
-  // console.log("new URL: ", newLongUrl);
-  let shortUrl = req.params.id;
-  // console.log("Id", shortUrl)
-  urlDatabase[shortUrl] = newLongUrl;
-  res.redirect("/urls")
 
-})
+app.post("/urls", (req, res) => {
+  const newInfo = req.body; // Log the POST request body to the console
+  let shortUrl = generateRandomString();
+  urlDatabase[shortUrl] = newInfo.longURL;
+  res.redirect(`/urls/${shortUrl}`);
 
+});
+
+// .........................................................."/login"
 app.get("/login", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
@@ -138,6 +152,21 @@ app.get("/login", (req, res) => {
   res.render("urls_login", templateVars);
 })
 
+app.post("/login", (req, res) => {
+  const newUserID = generateRandomString();
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!emailChecker(email)) {
+    res.status(403).send("Please provide valid email");
+  }
+  if (emailChecker(email) && !passChecker(password)) {
+    res.status(403).send("Password is not match");
+  } 
+  res.cookie("user_id", newUserID);
+  res.redirect("/urls")
+  
+})
+// ..........................................................logout
 app.get("/urls/logout", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
@@ -149,18 +178,16 @@ app.get("/urls/logout", (req, res) => {
 })
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
-  res.redirect("/urls")
+  res.redirect("/login")
 })
 
-app.post("/login", (req, res) => {
-  
-  res.redirect("/urls")
-})
+// .........................................................."/"
 
 app.get("/", (req, res) => {
 
   res.send("Hello!");
 });
+// .........................................................."/urls/:id"
 app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id, longURL: req.params.longURL,
@@ -170,15 +197,26 @@ app.get("/urls/:id", (req, res) => {
   };
   res.render("urls_show", templateVars);
 });
+app.post("/urls/:id", (req, res) => {
+  let newLongUrl = req.body.nim;
+  // console.log("new URL: ", newLongUrl);
+  let shortUrl = req.params.id;
+  // console.log("Id", shortUrl)
+  urlDatabase[shortUrl] = newLongUrl;
+  res.redirect("/urls")
+
+})
+// .........................................................."/set"
 app.get("/set", (req, res) => {
   const a = 1;
   res.send(`a = ${a}`);
 });
+// .........................................................."/fetch"
 
 app.get("/fetch", (req, res) => {
   res.send(`a = ${a}`);
 });
-
+// ..........................................................PORT
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
