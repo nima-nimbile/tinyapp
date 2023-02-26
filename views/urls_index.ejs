@@ -29,6 +29,8 @@
         </thead>
         <tbody>
           <% for (let id in urls) { %>
+            <!-- If url belongs to user show it -->
+            <% if (urls[id].userID === user_id.id) { %> 
             <tr>
               <td><%= id %></td>
               <td><%= urls[id].longURL %></td>
@@ -37,6 +39,7 @@
                 <input type="submit" value="Edit">
               </form> </td>
             </tr>
+          <% } %>
           <% } %>
         </tbody>
       </table>

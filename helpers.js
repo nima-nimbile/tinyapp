@@ -34,7 +34,7 @@ const getUserByEmail = function(email, database) {
     }
   }
 };
-// ..........................................................emailChecker(emailCheck)
+// ..........................................................emailChecker(emailCheck, users)
 function emailChecker(emailCheck, users) {
   for (let key in users) {
     if (users[key]['email'] === emailCheck.trim()) {
@@ -42,7 +42,7 @@ function emailChecker(emailCheck, users) {
     }
   }
 };
-// ..........................................................passChecker(pass)
+// ..........................................................passChecker(pass, userId)
 function passChecker(pass, userId) {
   let samePass = false;
   if (bcrypt.compareSync(pass.trim(), users[userId]['password'])) {
