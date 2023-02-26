@@ -1,4 +1,5 @@
-const { generateRandomString, emailChecker, passChecker, urlsForUser, urlDatabase, users } = require("./helpers");
+const { generateRandomString, emailChecker, passChecker, urlsForUser} = require("./helpers");
+const {urlDatabase, users} = require("./data");
 const cookieSession = require('cookie-session');
 const express = require("express");
 const app = express();
