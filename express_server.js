@@ -177,8 +177,8 @@ app.get("/urls/:id", (req, res) => {
     res.send("you do not own the URL");
   } else {
     const templateVars = {
-      id: req.params.id, longURL: req.params.longURL,
-      // username: req.cookies["username"],
+      id: shortUrl, 
+      longURL: urlDatabase[shortUrl]["longURL"],
       user_id: req.session.user_id,
       user: users
     };
